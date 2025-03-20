@@ -10,7 +10,7 @@ open PureHDF.VOL.Native
 
 let datasetName = "peaks"
 
-[<Struct; StructLayout(LayoutKind.Sequential, Pack = 1)>]
+[<Struct; StructLayout(LayoutKind.Sequential, Pack = 1);CLIMutable>]
 type Peak =
     {
         accession : string
@@ -44,7 +44,7 @@ let saveDataSet (file : FileInfo) =
     stream.Close()
 
 let readDataset (file : FileInfo) =
-    let readDataset = H5File.Open(file.OpenRead()).Dataset(datasetName)
+    let readDataset = H5File.Open(file.OpenRead(), options=H5ReadOptions(IncludeStructProperties=true)).Dataset(datasetName)
     readDataset.Read<Peak[]>()
 
 let checkData readBack =
